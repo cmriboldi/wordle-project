@@ -1,12 +1,22 @@
 import random
+import os
 
 class colors:
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
     END = '\033[0m'
 
-def choose_secret_word():
-    word_list = ["apple", "berry", "mango", "peach", "grape"]
+def choose_secret_word(word_list):
+    # word_list = []
+
+    current_dir = os.path.dirname(__file__)
+    file_path = os.path.join(current_dir, "fiveLetterWords.txt")
+
+    file_handle = open(file_path)
+    for line in file_handle:
+        word = line.rstrip()
+        if len(word) == 5:
+            word_list.append(word)
     return random.choice(word_list)
 
 def display_colored_guess(guessed_word, secret_word):
@@ -29,9 +39,10 @@ def display_colored_guess(guessed_word, secret_word):
 def wordle():
     print("Welcome to wordle!!!")
     # 1. Pick a random word from a list of words (ideally a super large list/dictionary)
-    secret_word = choose_secret_word()
+    word_list = []
+    secret_word = choose_secret_word(word_list)
     # TODO: Comment out this print statement before finishing.
-    # print(secret_word)
+    print(secret_word)
 
     remaining_guesses = 6
     while remaining_guesses > 0:
@@ -46,6 +57,8 @@ def wordle():
         elif len(guessed_word) != 5:
             print("Your word is the wrong length please try again.")
         #     d. Enhancement - Make sure the guessed_word is a valid word.
+        elif guessed_word not in word_list:
+            print("Your word is not in the dictionary. please try again.")
         else:
             remaining_guesses -= 1
             # We have a valid word.
