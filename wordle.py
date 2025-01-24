@@ -36,10 +36,28 @@ def display_colored_guess(guessed_word, secret_word):
 #     e. Print the colored word (and eventually previous guesses)
     print()
 
+def read_win_streak():
+    try:
+        current_dir = os.path.dirname(__file__)
+        file_path = os.path.join(current_dir, "win_streak.txt")
+        with open(file_path) as file:
+            return int(file.read().strip())
+    except FileNotFoundError:
+        return 0
+
+def write_win_streak(streak):
+    current_dir = os.path.dirname(__file__)
+    file_path = os.path.join(current_dir, "win_streak.txt")
+    with open(file_path, "w") as file:
+        file.write(str(streak))
+
 def wordle():
     print("Welcome to wordle!!!")
+    win_streak = read_win_streak()
+    print(f"Your current win streak is {win_streak}")
     # 1. Pick a random word from a list of words (ideally a super large list/dictionary)
     word_list = []
+    
     secret_word = choose_secret_word(word_list)
     # TODO: Comment out this print statement before finishing.
     print(secret_word)
@@ -67,11 +85,19 @@ def wordle():
             #     a. If the guessed_word equals the secret_word then they win! Game Over!
             if guessed_word == secret_word:
                 print("You guessed the correct word! You win!!")
+                win_streak += 1
+                write_win_streak(win_streak)
                 break
             else:
                 display_colored_guess(guessed_word, secret_word)
             print(f"You guessed incorrectly, you have {remaining_guesses} tries left.")
         # 4. If the guess wasn't correct then we let the guess again and decrease their remaining attempts.
+    else:
+        win_streak = 0
+        write_win_streak(win_streak)
+        print("Sorry you ran out of attempts and lost your win streak")    
+    print("Please play again later.")
+        
 
 
 if __name__ == "__main__":
